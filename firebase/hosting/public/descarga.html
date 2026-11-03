@@ -1,0 +1,10 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Descargar ME2</title><link rel="stylesheet" href="style.css"></head><body><main>
+<h1>Descargar ME2</h1><p id="s" class="mut">Verificando tu invitación…</p><p><a id="d" class="btn" style="display:none" href="#">Descargar APK</a></p>
+<p class="mut">Al abrir la app e iniciar sesión, tu invitación se usa y empieza la prueba de 24 h. <a href="instalar.html">Guía de instalación</a>.</p>
+</main><script>
+const t=new URLSearchParams(location.search).get("invite")||"";
+fetch("https://southamerica-east1-me2-app-ar.cloudfunctions.net/checkInvite?invite="+encodeURIComponent(t)).then(r=>r.json()).then(j=>{
+if(j.valid){s.textContent="Invitación válida.";d.style.display="inline-block";d.href="/apk/me2.apk?invite="+encodeURIComponent(t);}
+else s.textContent="La invitación no es válida o venció.";}).catch(()=>s.textContent="No pudimos verificar la invitación.");
+</script></body></html>

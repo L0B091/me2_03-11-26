@@ -1,0 +1,20 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ME2 — tu compañera virtual</title><link rel="stylesheet" href="style.css"></head><body><main>
+<p class="mut">ME2</p><h1>Una compañera que te recuerda.</h1>
+<p>Conversá con ME2, un avatar que reacciona, aprende de vos y retoma donde quedaron. Probala 24 horas con calidad completa.</p>
+<section class="cards">
+<div class="card"><h3>Prueba</h3><div class="price">24 h</div><p class="mut">Calidad completa, hasta 300 mensajes.</p></div>
+<div class="card"><h3>Básico</h3><div class="price">$4000</div><p class="mut">30 días, 300 mensajes por día. Renovación manual, los días se suman.</p></div>
+<div class="card"><h3>Full</h3><div class="price">$8000</div><p class="mut">30 días, galería extendida y prioridad alta. Requiere verificación de edad (+18).</p></div>
+</section>
+<h2>Pedí tu acceso</h2><p class="mut">Damos 100 accesos nuevos por día. Si se completan, te anotamos y te avisamos por el medio que elijas; el link dura 24 h.</p>
+<form id="w"><select name="network"><option value="email">Email</option><option value="whatsapp">WhatsApp</option><option value="instagram">Instagram</option><option value="tiktok">TikTok</option><option value="facebook">Facebook</option><option value="x">X</option></select>
+<input name="contact" placeholder="Tu usuario, mail o número" required maxlength="120"> <button class="btn">Anotarme</button></form><p id="msg" class="mut"></p>
+<footer class="mut">Pagos procesados por Mercado Pago. <a href="instalar.html">Cómo instalar</a> · <a href="terminos.html">Términos</a> · <a href="privacidad.html">Privacidad</a></footer>
+</main><script>
+const API="https://southamerica-east1-me2-app-ar.cloudfunctions.net";
+w.onsubmit=async e=>{e.preventDefault();const f=new FormData(w);
+try{const r=await fetch(API+"/joinWaitlist",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(Object.fromEntries(f))});
+const j=await r.json();msg.textContent=j.status==="invited"?"¡Listo! Te enviamos tu link de descarga.":"Cupos de hoy completos. Quedaste en la lista y te avisamos.";}
+catch{msg.textContent="Estamos preparando los accesos. Volvé pronto.";}};
+</script></body></html>
