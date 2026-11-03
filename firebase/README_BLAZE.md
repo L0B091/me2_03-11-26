@@ -38,3 +38,8 @@ En Tus integraciones → Webhooks: URL `https://southamerica-east1-me2-app-ar.cl
 Prueba 24 h, 300 mensajes, sin adulto · Básico $4000 / Full $8000, 30 días, apilables, renovación manual, 300 msg/día ·
 Full solo se cobra con edad verificada · modo reposo sin IA · 100 cupos/día · lista de espera con links de 24 h de un solo uso ·
 400 activos/día que solo frenan pruebas nuevas · IA solo local, sin Groq; si cae, estado `offline`.
+
+## Personalidad
+El prompt fijo de personalidad vive en `backend/personalidad/promptFijo.txt` (copia para Functions en `firebase/functions/src/personalidad/`). Está **desactivado por defecto**: con `USE_PERSONALITY_PROMPT=false` nada cambia.
+Al activarlo (`USE_PERSONALITY_PROMPT=true`), cada llamada a la IA local antepone el prompt con `{NOMBRE}` reemplazado (`PERSONAJE_NOMBRE`, por defecto `ME2`) y la línea `[ESTADO]` del turno, con topes en código (Básico/Play: intensidad ≤4, juego ≤2; usuario vulnerable: intensidad ≤2, juego 0). La respuesta pasa por un filtro de salida (palabras prohibidas, declaraciones de amor, menciones de IA/prompt/niveles).
+Si se cambia el prompt, actualizar ambas copias.

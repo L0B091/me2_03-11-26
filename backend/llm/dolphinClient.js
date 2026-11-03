@@ -1,3 +1,4 @@
+import { personalidadActiva, aplicarPersonalidad } from "../personalidad/index.js";
 // dolphinClient.js
 // Cliente OpenAI-compatible (/v1/chat/completions) para Dolphin Mistral Venice
 // en el servidor privado del usuario. La personalidad vive en el master prompt
@@ -56,6 +57,8 @@ export function obtenerDiagnostico() {
  * @returns {Promise<{used:boolean, respuesta:string|null, model?:string, usage?:object, reason?:string}>}
  */
 export async function chat(messages, opciones = {}) {
+  // USE_PERSONALITY_PROMPT=true: inyecta prompt fijo + línea [ESTADO]. Por defecto desactivado (sin cambios).
+  if (personalidadActiva()) messages = aplicarPersonalidad(messages, { nombre: opciones.nombre, estado: opciones.estado });
   const c = config();
   if (!estaConfigurado()) return { used: false, respuesta: null, reason: "dolphin_no_configurado" };
   if (ESTADISTICAS.cuotaAgotadaHasta && Date.now() < ESTADISTICAS.cuotaAgotadaHasta) {
