@@ -140,6 +140,13 @@ function montoEsperado(userId) {
 }
 
 function activarPremium(userId, paymentId, detail = {}) {
+  paymentId = String(paymentId ?? "").trim();
+  if (!paymentId) {
+    // Sin paymentId no hay idempotencia posible: no se activa nada.
+    const error = new Error("paymentId requerido");
+    error.status = 400;
+    throw error;
+  }
   const registro = obtenerRegistro(userId);
   const previo = (registro.historial || []).find(h => h?.tipo === "pago_aprobado" && paymentId && h.paymentId === paymentId);
   if (previo) {

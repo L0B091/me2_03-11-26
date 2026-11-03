@@ -6,6 +6,7 @@
 * la respuesta del LLM vuelve al usuario sin modificar.
 */
 
+import gestorContextoLLM from "./gestorContextoLLM.js";
 import historialConversacion from "../memoria/historialConversacion.js";
 import registrarActividad from "../memoria/registrarActividad.js";
 import guardia from "../seguridad/guardiaInstrucciones.js";
@@ -538,6 +539,17 @@ async function orquestador(mensajeUsuario, contexto = {}) {
     if (reaccion && persistirEnServidor) historialConversacion.anotarReaccion(userId, reaccion.emoji);
   }
 
+  // Gestor de contexto selectivo (portado de codex/revision-seguridad): solo diagnóstico en desarrollo,
+  // no cambia lo que se envía al LLM. En producción no se ejecuta.
+  let contextoLLMDebug = null;
+  if (process.env.NODE_ENV === "development") {
+    try {
+      contextoLLMDebug = await gestorContextoLLM.construirContextoLLM({ userId: contexto.userId, mensajeUsuario, estado: contexto.estado || null });
+    } catch (error) {
+      console.error("Error en gestorContextoLLM:", error?.message);
+    }
+  }
+
   return {
     respuesta,
     llmDisponible: Boolean(respuesta || media),
@@ -560,6 +572,7 @@ async function orquestador(mensajeUsuario, contexto = {}) {
       ? { ...accionesResultado, premium: { modulo: premiumLocalRes.modulo, operacion: premiumLocalRes.resultado?.op, ok: premiumLocalRes.resultado?.ok !== false, persistidoEn: premiumLocalRes.persistidoEn, estado: premiumLocalRes.persistidoEn === "telefono" ? premiumLocalRes.estado : undefined } }
       : accionesResultado,
     debug: {
+      ...(contextoLLMDebug ? { contextoLLM: contextoLLMDebug } : {}),
       llm: debugLLM,
       contexto: mensajeContexto.content,
       onboarding: { siguiente: onboarding.siguiente, faltantes: onboarding.faltantes, hechosTurno: onboarding.hechosTurno },
